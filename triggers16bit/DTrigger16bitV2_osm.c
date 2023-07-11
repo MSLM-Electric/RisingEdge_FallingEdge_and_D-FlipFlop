@@ -18,10 +18,10 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/      ______________________________________________________________________________________          __
-   ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________
-       __                                                                                              __
-   ___|  |______________ FwdFrntT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________
+/      ______________________________________________________________________________________          __          __________
+   ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|  
+       __                                                                                              __          __
+   ___|  |______________ FwdFrntT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
 
    --->|--|<--- Tff - 1 cycle fully executed program
 */
