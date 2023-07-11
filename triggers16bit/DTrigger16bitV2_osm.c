@@ -18,10 +18,10 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/*	    ______________________________________________________________________________________  	    __
-    ___|			a (uint) - 16 x IN signals or commandVars 			                      |________|  |________
-        __												                                                __
-	___|  |______________	FwdFrntT.Qff  16 x Outs - Calculating process is logical parallel _________|  |________
+/      ______________________________________________________________________________________          __
+   ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________
+       __                                                                                              __
+   ___|  |______________ FwdFrntT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________
 
    --->|--|<--- Tff - 1 cycle fully executed program
 */
@@ -31,8 +31,8 @@ uint16_t ForwardFrontTrigger16bit(const uint16_t a, const uint16_t tBITx, struct
 	{
 		a = 0xFFFF;
 	}*/
-    uint16_t sig = a & tBITx;
-    (*FFRegs).inputSignal = ((*FFRegs).inputSignal & ~tBITx) | sig;
+	uint16_t sig = a & tBITx;
+	(*FFRegs).inputSignal = ((*FFRegs).inputSignal & ~tBITx) | sig;
 	(*FFRegs).Qff = (*FFRegs).inputSignal & (~(*FFRegs).FfrontRegister);
 	(*FFRegs).FfrontRegister = (*FFRegs).inputSignal;
 	return (*FFRegs).Qff;        //FFRegs->Qff;
@@ -124,10 +124,10 @@ int main(void)
 }
 */
 
-/*	    __	      _____	          __		 ______
-	___|  |______|	   |_________| |________|      |___	a (uint) - 16 x IN signals or commandVars
-        _________		          ___________
-    ___|	     |_______________|		    |__________	DTrig.Q_Dtrig  16 x Outs - Calculating process is logical parallel
+/*      __        _____           _           ______
+    ___|  |______|     |_________| |_________|      |___ a (uint) - 16 x IN signals or commandVars
+        _________                 ___________
+    ___|         |_______________|           |__________ DTrig.Q_Dtrig  16 x Outs - Calculating process is logical parallel
 */
 uint16_t D_Trigger16bit(uint16_t a, uint16_t tBITx, struct D_TriggersInternalRegs16bit_t *DTrigRegs)
 {
