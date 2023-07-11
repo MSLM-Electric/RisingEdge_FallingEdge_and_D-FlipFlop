@@ -139,10 +139,10 @@ uint16_t D_Trigger16bit(uint16_t a, uint16_t tBITx, struct D_TriggersInternalReg
 	return (*DTrigRegs).Q_Dtrig;
 }
 
-/*	_______
-	       |_____________	a (uint) - 16 x IN signals or commandVars
-	        __
-	_______|  |__________	BackFrntT.Qbf
+/*	_______                                                                 __            _______
+	       |_____________	a (uint) - 16 x IN signals or commandVars  ____|  |__________|       |_____
+	        __                                                                 __                 __
+	_______|  |__________	BackFrntT.Qbf  ___________________________________|  |_______________|  |__
 
 	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program
 */
