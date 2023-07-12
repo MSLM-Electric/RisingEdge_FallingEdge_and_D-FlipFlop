@@ -107,11 +107,11 @@ int main(void)
 	while (true)
 	{
 		ForwardFrontTrigger16bit((DI_RUNMotor * tBIT0) | (DI_RUNPump * tBIT5) | (ReadTSensorOnce * tBIT4) | (1 * tBIT15), tBIT0 | tBIT5 | tBIT4 | tBIT15, &ForwardFTriggerReg);
-		if((ForwardFTriggerReg.Qff & tBIT0) == tBIT0)
+		if(ForwardFTriggerReg.Qff & tBIT0)
 		{
 			DQ_RUNMotor = ON;
 		}
-		if((ForwardFTriggerReg.Qff & tBIT5) == tBIT5)
+		if(ForwardFTriggerReg.Qff & tBIT5)
 		{
 			DI_RUNPump = ON;
 		}
