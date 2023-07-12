@@ -18,12 +18,15 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/      ______________________________________________________________________________________          __          __________
-   ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|  
-       __                                                                                              __          __
-   ___|  |______________ FwdFrntT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
+/       ______________________________________________________________________________________          __          __________
+    ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|  
+        __                                                                                              __          __
+    ___|  |______________ FwdFrntT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
 
-   --->|--|<--- Tff - 1 cycle fully executed program
+   --->|--|<--- Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
+       A  A    or:
+       |  |___ 2.Called ThisFunc() again on second time  
+       |______ 1.Called ThisFunc() time 
 */
 uint16_t ForwardFrontTrigger16bit(const uint16_t a, const uint16_t tBITx, struct ForwardFrontsInternalRegs16bit_t *FFRegs)
 {
@@ -144,7 +147,10 @@ uint16_t D_Trigger16bit(uint16_t a, uint16_t tBITx, struct D_TriggersInternalReg
 	        __                                                                 __                 __
 	_______|  |__________	BackFrntT.Qbf  ___________________________________|  |_______________|  |__
 
-	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program
+	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
+               A  A    or:
+               |  |___ 2.Called ThisFunc() again on second time  
+               |______ 1.Called ThisFunc() time 
 */
 uint16_t BackFrontTrigger16bit(uint16_t a, uint16_t tBITx, struct BackFrontsInternalRegs16bit_t *BFRegs)
 {
