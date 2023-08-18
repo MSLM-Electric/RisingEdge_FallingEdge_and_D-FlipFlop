@@ -21,42 +21,42 @@ POSSIBILITY OF SUCH DAMAGE.
 /*	    ______________________________________________________________________________________  	   __
     ___|			a (uint) - 16 x IN signals or commandVars 			                     |________|  |________
         __												                                                __
-	___|  |______________	FwdFrntT.Qff  16 x Outs - Calculating process is logical parallel _________|  |________
+	___|  |______________	RisEdgeT.Qff  16 x Outs - Calculating process is logical parallel _________|  |________
 
    --->|--|<--- Tff - 1 cycle fully executed program
 */
-uint16_t ForwardFrontTrigger16bit(const uint16_t a, const uint16_t tBITx, struct ForwardFrontsInternalRegs16bit_t *FFRegs)
+uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
 	/*if (a == 1)
 	{
 		a = 0xFFFF;
 	}*/
     uint16_t sig = a & tBITx;
-    (*FFRegs).inputSignal = ((*FFRegs).inputSignal & ~tBITx) | sig;
-	(*FFRegs).Qff = (*FFRegs).inputSignal & (~(*FFRegs).FfrontRegister);
-	(*FFRegs).FfrontRegister = (*FFRegs).inputSignal;
-	return (*FFRegs).Qff;        //FFRegs->Qff;
+    (*RERegs).inputSignal = ((*RERegs).inputSignal & ~tBITx) | sig;
+	(*RERegs).Qre = (*RERegs).inputSignal & (~(*RERegs).REdgeRegister);
+	(*RERegs).REdgeRegister = (*RERegs).inputSignal;
+	return (*RERegs).Qre;        //FFRegs->Qff;
 }
 
-// ForwardFrontTrigger16bitCallEverywhere() or name it like ForwardFrontTriggerOnlySpecBits() or ForwardFrontTriggerWithoutAffectToOthers()
+// RisingEdgeTrigger16bitCallEverywhere() or name it like RisingEdgeTriggerOnlySpecBits() or RisingEdgeTriggerWithoutAffectToOthers()
 // You can call this function anywhere. Safety function for *FFRegs
-uint16_t ForwardFrontTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct ForwardFrontsInternalRegs16bit_t *FFRegs)
+uint16_t RisingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {	
     //stayAsItWas to don't affect to the another bits except the bits specified on tBITx
     //safely save the current bits states of Trigger
-	volatile static struct ForwardFrontsInternalRegs16bit_t stayAsItLastFFRegs; //or stayAsItWasFFRegs
-    stayAsItLastFFRegs.inputSignal = (*FFRegs).inputSignal;
-    stayAsItLastFFRegs.FfrontRegister = (*FFRegs).FfrontRegister;
-    stayAsItLastFFRegs.Qff = (*FFRegs).Qff;
+	volatile static struct RisingEdgesTrigInternalRegs16bit_t stayAsItLastRERegs; //or stayAsItWasRERegs
+    stayAsItLastRERegs.inputSignal = (*RERegs).inputSignal;
+    stayAsItLastRERegs.REdgeRegister = (*RERegs).REdgeRegister;
+    stayAsItLastRERegs.Qre = (*RERegs).Qre;
 
-    ForwardFrontTrigger16bit(a, tBITx, FFRegs);  //work with specified bits
+    RisingEdgeTrigger16bit(a, tBITx, RERegs);  //work with specified bits
 
     //And then safely return back the other current bits states of Trigger mentioned on initial line of func
-    (*FFRegs).inputSignal |= (~tBITx & stayAsItLastFFRegs.inputSignal);
-    (*FFRegs).Qff |= ((~tBITx) & (stayAsItLastFFRegs.Qff));
-    (*FFRegs).FfrontRegister |= (~tBITx & stayAsItLastFFRegs.FfrontRegister);
+    (*RERegs).inputSignal |= (~tBITx & stayAsItLastRERegs.inputSignal);
+    (*RERegs).Qre |= ((~tBITx) & (stayAsItLastRERegs.Qre));
+    (*RERegs).REdgeRegister |= (~tBITx & stayAsItLastRERegs.REdgeRegister);
 
-    return (*FFRegs).Qff & tBITx; //?        //FFRegs->Qff;
+    return (*RERegs).Qre & tBITx;       //FFRegs->Qff; (as a variant)s
 }
 
 //EXAMPLE of using
@@ -129,30 +129,51 @@ int main(void)
         _________		          ___________
     ___|	     |_______________|		    |__________	DTrig.Q_Dtrig  16 x Outs - Calculating process is logical parallel
 */
-uint16_t D_Trigger16bit(uint16_t a, uint16_t tBITx, struct D_TriggersInternalRegs16bit_t *DTrigRegs)
+uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs)
 {
-	a = a & tBITx;
-	(*DTrigRegs).inputSignal = ((*DTrigRegs).inputSignal & (~tBITx)) | a;
-	(*DTrigRegs).Q_Dtrig = ((*DTrigRegs).inputSignal | (*DTrigRegs).Q_Dtrig) & (~(*DTrigRegs).DtrigRegK2);
+	//a = a & tBITx;
+	uint16_t sig = a & tBITx;
+	(*DTrigRegs).inputSignal = ((*DTrigRegs).inputSignal & (~tBITx)) | sig;
 	(*DTrigRegs).DtrigRegK1 = (*DTrigRegs).Q_Dtrig & (~(*DTrigRegs).inputSignal | (*DTrigRegs).DtrigRegK1);
 	(*DTrigRegs).DtrigRegK2 = ((*DTrigRegs).DtrigRegK1 | (*DTrigRegs).DtrigRegK2) & (*DTrigRegs).inputSignal;
+	(*DTrigRegs).Q_Dtrig = ((*DTrigRegs).inputSignal | (*DTrigRegs).Q_Dtrig) & (~(*DTrigRegs).DtrigRegK2);
 	return (*DTrigRegs).Q_Dtrig;
 }
 
 /*	_______
 	       |_____________	a (uint) - 16 x IN signals or commandVars
 	        __
-	_______|  |__________	BackFrntT.Qbf
+	_______|  |__________	FallEdgeT.Qbf
 
 	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program
 */
-uint16_t BackFrontTrigger16bit(uint16_t a, uint16_t tBITx, struct BackFrontsInternalRegs16bit_t *BFRegs)
+uint16_t FallingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
 {
-	a = a & tBITx;
-	(*BFRegs).inputSignal = ((*BFRegs).inputSignal & (~tBITx)) | a;
-	(*BFRegs).BfrontRegister = ((*BFRegs).inputSignal | (*BFRegs).BfrontRegister) & (~(*BFRegs).Qbf);
-	(*BFRegs).Qbf = ~(*BFRegs).inputSignal & (*BFRegs).BfrontRegister;
-	return (*BFRegs).Qbf;
+	uint16_t sig = a & tBITx;
+	(*FERegs).inputSignal = ((*FERegs).inputSignal & (~tBITx)) | sig;
+	(*FERegs).FEdgeRegister = ((*FERegs).inputSignal | (*FERegs).FEdgeRegister) & (~(*FERegs).Qfe);
+	(*FERegs).Qfe = ~(*FERegs).inputSignal & (*FERegs).FEdgeRegister;
+	return (*FERegs).Qfe;
+}
+
+uint16_t FallingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
+{
+	//stayAsItWas to don't affect to the another bits except the bits specified on tBITx
+	//safely save the current bits states of Trigger
+	volatile static struct FallingEdgesTrigInternalRegs16bit_t stayAsItLastFERegs;
+	//just do: memcpy(&stayAsItLastFERegs, FERegs, sizeof(stayAsItLastFERegs);
+	stayAsItLastFERegs.inputSignal = FERegs->inputSignal;
+	stayAsItLastFERegs.FEdgeRegister = FERegs->FEdgeRegister;
+	stayAsItLastFERegs.Qfe = FERegs->Qfe;
+
+	FallingEdgeTrigger16bit(a, tBITx, FERegs);
+
+	//And then safely return back the other current bits states of Trigger mentioned on initial line of func
+	FERegs->inputSignal |= (~tBITx & stayAsItLastFERegs.inputSignal);
+	FERegs->FEdgeRegister |= (~tBITx & stayAsItLastFERegs.FEdgeRegister);
+	FERegs->Qfe |= (~tBITx & stayAsItLastFERegs.Qfe);
+
+	return FERegs->Qfe & tBITx;
 }
 
 
@@ -178,15 +199,22 @@ Example: ForwardFrontsInternalRegs16bit_t FwdFrTrig_MOTORs_Control;
 	    Reset_ForwardFrontTrigger16bit(tALLBITS, &FwdFrTrig_FANs_Control);    //Reset all signals registers;	    
 Status: tested
 */
-void Reset_ForwardFrontTrigger16bit(uint16_t tBITx, struct ForwardFrontsInternalRegs16bit_t *FFRegs)
+void Reset_RisingEdgeTrigger16bit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
-	(*FFRegs).inputSignal &= ~tBITx;      
-	(*FFRegs).FfrontRegister &= ~tBITx;
-	(*FFRegs).Qff &= ~tBITx;
+	(*RERegs).inputSignal &= ~tBITx;      
+	(*RERegs).REdgeRegister &= ~tBITx;
+	(*RERegs).Qre &= ~tBITx;
 	return;        
 }
 
-/*Status: Not tested yet*/
+void Reset_FallingEdgeTrigger16bit(uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
+{
+	FERegs->inputSignal &= ~tBITx;
+	FERegs->FEdgeRegister &= ~tBITx;
+	FERegs->Qfe &= ~tBITx;
+	return;
+}
+
 void Reset_D_Trigger16bit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t  *DTrigRegs)
 {
 	(*DTrigRegs).inputSignal &= ~tBITx;

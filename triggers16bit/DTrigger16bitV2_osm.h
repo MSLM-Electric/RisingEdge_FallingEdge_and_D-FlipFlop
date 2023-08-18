@@ -51,18 +51,18 @@
 //	tBIT0 = 0x0001
 //}BITxmask_type;
 
-struct ForwardFrontsInternalRegs16bit_t
+struct RisingEdgesTrigInternalRegs16bit_t
 {
     uint16_t inputSignal;
-    uint16_t FfrontRegister;
-    uint16_t Qff;
+    uint16_t REdgeRegister;
+    uint16_t Qre;
 };
 
-struct BackFrontsInternalRegs16bit_t  //Ýòà ñòðóêòóðà ïîõîæà íà âåðõíþþ, òàê ÷òî ìîæíî îáîáùàòü-îáúåäèíÿòü (ò.å ýòî óäàëÿòü è âåðõíåå óíèâåðñàëèçîâàâ ïðèìåíÿòü)
+struct FallingEdgesTrigInternalRegs16bit_t  //Ýòà ñòðóêòóðà ïîõîæà íà âåðõíþþ, òàê ÷òî ìîæíî îáîáùàòü-îáúåäèíÿòü (ò.å ýòî óäàëÿòü è âåðõíåå óíèâåðñàëèçîâàâ ïðèìåíÿòü)
 {
     uint16_t inputSignal;
-    uint16_t BfrontRegister;
-    uint16_t Qbf;
+    uint16_t FEdgeRegister;
+    uint16_t Qfe;
 };
 
 struct D_TriggersInternalRegs16bit_t
@@ -73,14 +73,17 @@ struct D_TriggersInternalRegs16bit_t
     uint16_t Q_Dtrig;
 };
 
-uint16_t ForwardFrontTrigger16bit(const uint16_t a, const uint16_t tBITx, struct ForwardFrontsInternalRegs16bit_t *FFRegs);
-uint16_t BackFrontTrigger16bit(uint16_t a, uint16_t tBITx, struct BackFrontsInternalRegs16bit_t *BFRegs);
-uint16_t D_Trigger16bit(uint16_t a, uint16_t tBITx, struct D_TriggersInternalRegs16bit_t *DTrigRegs);
-unsigned char delayedPress16bit(uint16_t *countReg, unsigned char inputBit, unsigned char k);
-void Reset_ForwardFrontTrigger16bit(uint16_t tBITx, struct ForwardFrontsInternalRegs16bit_t *FFRegs);
-void Reset_D_Trigger16bit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t *DTrigRegs);
-uint16_t ForwardFrontTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct ForwardFrontsInternalRegs16bit_t* FFRegs);
 
+uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs);
+uint16_t FallingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t *FERegs);
+uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t *DTrigRegs);
+unsigned char delayedPress16bit(uint16_t *countReg, unsigned char inputBit, unsigned char k);
+void Reset_RisingEdgeTrigger16bit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs);
+void Reset_FallingEdgeTrigger16bit(uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t *FERegs);
+void Reset_D_Trigger16bit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t *DTrigRegs);
+uint16_t RisingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs);
+uint16_t FallingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs);
+uint16_t D_TriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs);
 
 #endif // !DTRIGGER16BITV2_OSM_h
 
