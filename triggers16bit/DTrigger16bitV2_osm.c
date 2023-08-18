@@ -18,12 +18,15 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/*	    ______________________________________________________________________________________  	   __
-    ___|			a (uint) - 16 x IN signals or commandVars 			                     |________|  |________
-        __												                                                __
-	___|  |______________	RisEdgeT.Qff  16 x Outs - Calculating process is logical parallel _________|  |________
+/*      ______________________________________________________________________________________          __          __________
+    ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|  
+        __                                                                                              __          __
+    ___|  |______________ RisEdgeT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
 
-   --->|--|<--- Tff - 1 cycle fully executed program
+   --->|--|<--- Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
+       A  A    or:
+       |  |___ 2.Called ThisFunc() again on second time  
+       |______ 1.Called ThisFunc() time 
 */
 uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
@@ -104,11 +107,11 @@ int main(void)
 	while (true)
 	{
 		ForwardFrontTrigger16bit((DI_RUNMotor * tBIT0) | (DI_RUNPump * tBIT5) | (ReadTSensorOnce * tBIT4) | (1 * tBIT15), tBIT0 | tBIT5 | tBIT4 | tBIT15, &ForwardFTriggerReg);
-		if((ForwardFTriggerReg.Qff & tBIT0) == tBIT0)
+		if(ForwardFTriggerReg.Qff & tBIT0)
 		{
 			DQ_RUNMotor = ON;
 		}
-		if((ForwardFTriggerReg.Qff & tBIT5) == tBIT5)
+		if(ForwardFTriggerReg.Qff & tBIT5)
 		{
 			DI_RUNPump = ON;
 		}
@@ -124,10 +127,10 @@ int main(void)
 }
 */
 
-/*	    __	      _____	          __		 ______
-	___|  |______|	   |_________| |________|      |___	a (uint) - 16 x IN signals or commandVars
-        _________		          ___________
-    ___|	     |_______________|		    |__________	DTrig.Q_Dtrig  16 x Outs - Calculating process is logical parallel
+/*      __        _____           _           ______
+    ___|  |______|     |_________| |_________|      |___ a (uint) - 16 x IN signals or commandVars
+        _________                 ___________
+    ___|         |_______________|           |__________ DTrig.Q_Dtrig  16 x Outs - Calculating process is logical parallel
 */
 uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs)
 {
@@ -140,12 +143,15 @@ uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_Trigger
 	return (*DTrigRegs).Q_Dtrig;
 }
 
-/*	_______
-	       |_____________	a (uint) - 16 x IN signals or commandVars
-	        __
-	_______|  |__________	FallEdgeT.Qbf
+/*	_______                                                                 __            _______
+	       |_____________	a (uint) - 16 x IN signals or commandVars  ____|  |__________|       |_____
+	        __                                                                 __                 __
+	_______|  |__________	FallEdgeT.Qbf  ___________________________________|  |_______________|  |__
 
-	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program
+	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
+               A  A    or:
+               |  |___ 2.Called ThisFunc() again on second time  
+               |______ 1.Called ThisFunc() time 
 */
 uint16_t FallingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
 {
