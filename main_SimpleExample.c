@@ -10,7 +10,7 @@ static void DrawSettinsMenuByLCD(void) { return; };
 /* Register some signals to RiseEdgeTriggerReg as you want :
 DI_RUNMotor - tBIT0
 DI_RUNPummp - tBIT5
-ReadTSensorOnce - tBIT4
+ReadTSensorOnce command - tBIT4
 DI_STOPMotor - tBIT1
 Draw something by LCD only once at begining - tBIT15
 
@@ -24,7 +24,7 @@ unsigned char DI_RUNPump = 0;
 unsigned char DI_STOPMotor = 0;
 unsigned char DQ_RUNMotor = 0;
 unsigned char DQ_RUNPummp = 0;
-unsigned char ReadTSensorOnce = 0;
+unsigned char ReadTSensorOnce_cmd = 0;
 
 uint8_t DI_cmdButtonPress = 0;
 uint8_t buttonPressSwitchedStateTo = 0;
@@ -39,7 +39,7 @@ int main(void)
 	YourINIT();
 	while (1)
 	{
-		RisingEdgeTrigger16bit((DI_RUNMotor * tBIT0) | (DI_RUNPump * tBIT5) | (ReadTSensorOnce * tBIT4) | (1 * tBIT15), tBIT0 | tBIT5 | tBIT4 | tBIT15, &RiseEdgeTriggerReg);
+		RisingEdgeTrigger16bit((DI_RUNMotor * tBIT0) | (DI_RUNPump * tBIT5) | (ReadTSensorOnce_cmd * tBIT4) | (1 * tBIT15), tBIT0 | tBIT5 | tBIT4 | tBIT15, &RiseEdgeTriggerReg);
 		if((RiseEdgeTriggerReg.Qre & tBIT0) == tBIT0)
 		{
 			DQ_RUNMotor = ON;
