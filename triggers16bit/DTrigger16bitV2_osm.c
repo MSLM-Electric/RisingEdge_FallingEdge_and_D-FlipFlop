@@ -19,14 +19,15 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
 /*      ______________________________________________________________________________________          __          __________
-    ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|  
-        __                                                                                              __          __
+    ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|
+	 This is input signal:
+	      __                                                                                              __          __
     ___|  |______________ RisEdgeT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
-
+	 This is output signal of EdgeTrigger:
    --->|--|<--- Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
        A  A    or:
-       |  |___ 2.Called ThisFunc() again on second time  
-       |______ 1.Called ThisFunc() time 
+       |  |___ 2.Called ThisFunc() again on second time
+       |______ 1.Called ThisFunc() time
 */
 uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
@@ -44,7 +45,7 @@ uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct R
 // RisingEdgeTrigger16bitCallEverywhere() or name it like RisingEdgeTriggerOnlySpecBits() or RisingEdgeTriggerWithoutAffectToOthers()
 // You can call this function anywhere. Safety function for *FFRegs
 uint16_t RisingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
-{	
+{
     //stayAsItWas to don't affect to the another bits except the bits specified on tBITx
     //safely save the current bits states of Trigger
 	volatile static struct RisingEdgesTrigInternalRegs16bit_t stayAsItLastRERegs; //or stayAsItWasRERegs
@@ -79,7 +80,7 @@ ForwardFrontsInternalRegs_t ForwardFTriggerReg;
 
 int main(void)
 {
-    INIT();	
+    INIT();
 	while (true)
 	{
 		if (ForwardFrontTriggerbyte(DI_RUNMotor, tBIT0, &ForwardFTriggerReg) == tBIT0)
@@ -149,9 +150,9 @@ uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_Trigger
 	_______|  |__________	FallEdgeT.Qbf  ___________________________________|  |_______________|  |__
 
 	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
-               A  A    or:
-               |  |___ 2.Called ThisFunc() again on second time  
-               |______ 1.Called ThisFunc() time 
+           A  A    or:
+           |  |___ 2.Called ThisFunc() again on second time
+           |______ 1.Called ThisFunc() time
 */
 uint16_t FallingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
 {
@@ -202,15 +203,15 @@ Example: ForwardFrontsInternalRegs16bit_t FwdFrTrig_MOTORs_Control;
 	    ...
             Reset_ForwardFrontTrigger16bit(tBIT15 | tBIT3, &FwdFrTrig_MOTORs_Control);
 	    Reset_ForwardFrontTrigger16bit(0xFFFF, &FwdFrTrig_FANs_Control);    //Reset all signals registers; or:
-	    Reset_ForwardFrontTrigger16bit(tALLBITS, &FwdFrTrig_FANs_Control);    //Reset all signals registers;	    
+	    Reset_ForwardFrontTrigger16bit(tALLBITS, &FwdFrTrig_FANs_Control);    //Reset all signals registers;
 Status: tested
 */
 void Reset_RisingEdgeTrigger16bit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
-	(*RERegs).inputSignal &= ~tBITx;      
+	(*RERegs).inputSignal &= ~tBITx;
 	(*RERegs).REdgeRegister &= ~tBITx;
 	(*RERegs).Qre &= ~tBITx;
-	return;        
+	return;
 }
 
 void Reset_FallingEdgeTrigger16bit(uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
