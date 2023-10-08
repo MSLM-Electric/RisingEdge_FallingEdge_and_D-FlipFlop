@@ -21,7 +21,7 @@ POSSIBILITY OF SUCH DAMAGE.
 /*      ______________________________________________________________________________________          __          __________
     ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|
 	 This is input signal:
-	      __                                                                                              __          __
+	    __                                                                                              __          __
     ___|  |______________ RisEdgeT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
 	 This is output signal of EdgeTrigger:
    --->|--|<--- Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
