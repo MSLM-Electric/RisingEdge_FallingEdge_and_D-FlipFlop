@@ -21,7 +21,7 @@ POSSIBILITY OF SUCH DAMAGE.
 /*      ______________________________________________________________________________________          __          __________
     ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|
 	 This is input signal:
-	    __                                                                                              __          __
+        __                                                                                              __          __
     ___|  |______________ RisEdgeT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
 	 This is output signal of EdgeTrigger:
    --->|--|<--- Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
@@ -63,70 +63,6 @@ uint16_t RisingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint1
     return (*RERegs).Qre & tBITx;       //FFRegs->Qff; (as a variant)s
 }
 
-//EXAMPLE of using
-/*
-#include <xc.h> //MPLAB X IDE platform, only for TRISbits. You don't need to do it if you're using another ones.
-#include "DTrigger16bitV2_osm.h"
-
-#define ON 1
-#define OFF 0
-#define DI_RUNMotor TRISBbits.7
-#define DI_RUNPump TRISBbits.5
-#define DI_STOPMotor TRISBbits.6
-#define DQ_RUNMotor TRISAbits.0
-#define DQ_RUNPummp TRISAbits.1
-
-ForwardFrontsInternalRegs_t ForwardFTriggerReg;
-
-int main(void)
-{
-    INIT();
-	while (true)
-	{
-		if (ForwardFrontTriggerbyte(DI_RUNMotor, tBIT0, &ForwardFTriggerReg) == tBIT0)
-		{
-			DQ_RUNMotor = ON;
-		}
-		if (ForwardFrontTriggerbyte(DI_STOPMotor, tBIT1, &ForwardFTriggerReg) == tBIT1)
-		{
-		    DQ_RUNMotor = OFF;
-		}
-	}
-}//*/
-
-//Ïðèìåð ïàðàëëåëüíîãî ñ÷èòûâàíèÿ è îïðåäåëåíèÿ ïðèñóòñòâèÿ ïåðåäíåãî ôðîíòà 3 ñëó÷àéíûõ âõîäíûõ ñèãíàëîâ:
-//DI_RUNMotor - tBIT0
-//DI_RUNPummp - tBIT5
-//ReadTSensorOnce - tBIT4
-//DI_STOPMotor - tBIT1
-//Çàðèñîâàòü îäèí ðàç Ìåíþ íàñòðîåê â LCD - tBIT15
-/*
-ForwardFrontsInternalRegs16bit_t ForwardFTriggerReg;
-int main(void)
-{
-	INIT();
-	while (true)
-	{
-		ForwardFrontTrigger16bit((DI_RUNMotor * tBIT0) | (DI_RUNPump * tBIT5) | (ReadTSensorOnce * tBIT4) | (1 * tBIT15), tBIT0 | tBIT5 | tBIT4 | tBIT15, &ForwardFTriggerReg);
-		if(ForwardFTriggerReg.Qff & tBIT0)
-		{
-			DQ_RUNMotor = ON;
-		}
-		if(ForwardFTriggerReg.Qff & tBIT5)
-		{
-			DI_RUNPump = ON;
-		}
-		if((ForwardFTriggerReg.Qff & tBIT4) == tBIT4)
-		{
-			ds18b20ReadTemp(ds18b20_1wireUnit, Tsensor2Address, data);
-		}
-		if((ForwardFTriggerReg.Qff & tBIT15) == tBIT15)
-		{
-			DrawSettinsMenuByLCD();
-		}
-	}
-}
-*/
 
 /*      __        _____           _           ______
     ___|  |______|     |_________| |_________|      |___ a (uint) - 16 x IN signals or commandVars
