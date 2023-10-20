@@ -84,9 +84,5 @@ void Reset_D_Trigger16bit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t *
 uint16_t RisingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs);
 uint16_t FallingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs);
 uint16_t D_TriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs);
-
-void Reset_RisingEdgeTriggerOnlySpecBit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t* RERegs);
-void Reset_FallingEdgeTriggerOnlySpecBit(uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs);
-void Reset_D_TriggerOnlySpecBit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs);
 #endif // !DTRIGGER16BITV2_OSM_h
 

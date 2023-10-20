@@ -188,21 +188,3 @@ void Reset_D_Trigger16bit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t  
 	(*DTrigRegs).Q_Dtrig &= ~tBITx;
 	return;
 }
-
-void Reset_RisingEdgeTriggerOnlySpecBit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t* RERegs)
-{
-	//in process in a little while.
-	return;
-}
-
-void Reset_FallingEdgeTriggerOnlySpecBit(uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
-{
-	//in process in a little while.
-	return;
-}
-
-void Reset_D_TriggerOnlySpecBit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs)
-{
-	//in process in a little while.
-	return;
-}
