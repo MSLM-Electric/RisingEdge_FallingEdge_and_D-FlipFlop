@@ -37,8 +37,8 @@ uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct R
 	}*/
     uint16_t sig = a & tBITx;
     (*RERegs).inputSignal = ((*RERegs).inputSignal & ~tBITx) | sig;
-	(*RERegs).Qre = (*RERegs).inputSignal & (~(*RERegs).REdgeRegister);
-	(*RERegs).REdgeRegister = (*RERegs).inputSignal;
+    (*RERegs).Qre = (*RERegs).inputSignal & (~(*RERegs).REdgeRegister);
+    (*RERegs).REdgeRegister = (*RERegs).inputSignal;
 	return (*RERegs).Qre;        //FFRegs->Qff;
 }
 
@@ -119,6 +119,28 @@ uint16_t FallingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint
 	return FERegs->Qfe & tBITx;
 }
 
+uint16_t D_TriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs)
+{
+	//testing in process in a little while.
+	//stayAsItWas to don't affect to the another bits except the bits specified on tBITx
+	//safely save the current bits states of Trigger
+	volatile static struct D_TriggersInternalRegs16bit_t stayAsItLastDTRegs;
+
+	stayAsItLastDTRegs.inputSignal = DTrigRegs->inputSignal;
+	stayAsItLastDTRegs.DtrigRegK1 = DTrigRegs->DtrigRegK1;
+	stayAsItLastDTRegs.DtrigRegK2 = DTrigRegs->DtrigRegK2;
+	stayAsItLastDTRegs.Q_Dtrig = DTrigRegs->Q_Dtrig;
+	// just do: memcpy();
+	D_Trigger16bit(a, tBITx, DTrigRegs);
+
+	//And then safely return back the other current bits states of Trigger mentioned on initial line of func
+	DTrigRegs->inputSignal |= (~tBITx & stayAsItLastDTRegs.inputSignal);
+	DTrigRegs->DtrigRegK1 |= (~tBITx & stayAsItLastDTRegs.DtrigRegK1);
+	DTrigRegs->DtrigRegK2 |= (~tBITx & stayAsItLastDTRegs.DtrigRegK2);
+	DTrigRegs->Q_Dtrig |= (~tBITx & stayAsItLastDTRegs.Q_Dtrig);
+	return DTrigRegs->Q_Dtrig & tBITx;
+}
+
 
 unsigned char delayedPress16bit(uint16_t *countReg, unsigned char inputBit, unsigned char k)  //int have not sense
 {
@@ -164,5 +186,23 @@ void Reset_D_Trigger16bit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t  
 	(*DTrigRegs).DtrigRegK1 &= ~tBITx;
 	(*DTrigRegs).DtrigRegK2 &= ~tBITx;
 	(*DTrigRegs).Q_Dtrig &= ~tBITx;
+	return;
+}
+
+void Reset_RisingEdgeTriggerOnlySpecBit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t* RERegs)
+{
+	//in process in a little while.
+	return;
+}
+
+void Reset_FallingEdgeTriggerOnlySpecBit(uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
+{
+	//in process in a little while.
+	return;
+}
+
+void Reset_D_TriggerOnlySpecBit(uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs)
+{
+	//in process in a little while.
 	return;
 }

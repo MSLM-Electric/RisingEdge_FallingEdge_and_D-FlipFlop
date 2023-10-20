@@ -17,6 +17,7 @@ Draw something by LCD only once at begining - tBIT15
   Register/allocate some signals to D_TriggerRegisterForSomeButtons :
 DI_cmdButtonPress - tBIT0
 DI_StartStopPress - tBIT5
+DI_EnterEscapePress - tBIT6
 */
 
 unsigned char DI_RUNMotor = 0;
@@ -30,7 +31,10 @@ uint8_t DI_cmdButtonPress = 0;
 uint8_t buttonPressSwitchedStateTo = 0;
 uint16_t incrementWhenButtonPressSwitched = 0;
 uint8_t DI_StartStopPress;
+uint8_t DI_EnterEscapePress;
 uint8_t DQ_ProcesStarted = 0;
+uint8_t ProcessEntering = 0;
+uint8_t ProcessEscaping = 0;
 struct D_TriggersInternalRegs16bit_t D_TriggerRegisterForSomeButtons;
 
 struct RisingEdgesTrigInternalRegs16bit_t RiseEdgeTriggerReg;
@@ -57,7 +61,7 @@ int main(void)
 		{
 			DrawSettinsMenuByLCD();
 		}
-		D_Trigger16bit((DI_cmdButtonPress * tBIT0) | (DI_StartStopPress * tBIT5), tBIT0 | tBIT5, &D_TriggerRegisterForSomeButtons);
+		D_TriggerWithoutAffectToOtherbits((DI_cmdButtonPress * tBIT0) | (DI_StartStopPress * tBIT5), tBIT0 | tBIT5, &D_TriggerRegisterForSomeButtons);
 		if (D_TriggerRegisterForSomeButtons.Q_Dtrig & tBIT0)
 		{
 			buttonPressSwitchedStateTo = 1;
@@ -69,6 +73,16 @@ int main(void)
 			DQ_ProcesStarted = 1;
 		}else {
 			DQ_ProcesStarted = 0;
+		}
+		D_TriggerWithoutAffectToOtherbits(DI_EnterEscapePress * tBIT6, tBIT6, &D_TriggerRegisterForSomeButtons);
+		if (D_TriggerRegisterForSomeButtons.Q_Dtrig & tBIT6) {
+			//switch process to
+			ProcessEntering = 1;   //note that with one button we are switching the processes beetwen.
+			ProcessEscaping = 0;
+		}else{
+			//switch process to
+			ProcessEntering = 0;
+			ProcessEscaping = 1;
 		}
 	}
 }
