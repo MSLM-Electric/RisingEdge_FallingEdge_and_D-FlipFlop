@@ -31,10 +31,6 @@ POSSIBILITY OF SUCH DAMAGE.
 */
 uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
-	/*if (a == 1)
-	{
-		a = 0xFFFF;
-	}*/
     uint16_t sig = a & tBITx;
     (*RERegs).inputSignal = ((*RERegs).inputSignal & ~tBITx) | sig;
     (*RERegs).Qre = (*RERegs).inputSignal & (~(*RERegs).REdgeRegister);
@@ -71,7 +67,6 @@ uint16_t RisingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint1
 */
 uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs)
 {
-	//a = a & tBITx;
 	uint16_t sig = a & tBITx;
 	(*DTrigRegs).inputSignal = ((*DTrigRegs).inputSignal & (~tBITx)) | sig;
 	(*DTrigRegs).DtrigRegK1 = (*DTrigRegs).Q_Dtrig & (~(*DTrigRegs).inputSignal | (*DTrigRegs).DtrigRegK1);
@@ -86,9 +81,9 @@ uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_Trigger
 	_______|  |__________	FallEdgeT.Qbf  ___________________________________|  |_______________|  |__
 
 	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
-           A  A    or:
-           |  |___ 2.Called ThisFunc() again on second time
-           |______ 1.Called ThisFunc() time
+	       A  A    or:
+	       |  |___ 2.Called ThisFunc() again on second time
+	       |______ 1.Called ThisFunc() time
 */
 uint16_t FallingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct FallingEdgesTrigInternalRegs16bit_t* FERegs)
 {
@@ -162,7 +157,6 @@ Example: ForwardFrontsInternalRegs16bit_t FwdFrTrig_MOTORs_Control;
             Reset_ForwardFrontTrigger16bit(tBIT15 | tBIT3, &FwdFrTrig_MOTORs_Control);
 	    Reset_ForwardFrontTrigger16bit(0xFFFF, &FwdFrTrig_FANs_Control);    //Reset all signals registers; or:
 	    Reset_ForwardFrontTrigger16bit(tALLBITS, &FwdFrTrig_FANs_Control);    //Reset all signals registers;
-Status: tested
 */
 void Reset_RisingEdgeTrigger16bit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
