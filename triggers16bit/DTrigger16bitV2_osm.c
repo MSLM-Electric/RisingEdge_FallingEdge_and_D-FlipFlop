@@ -22,20 +22,20 @@ POSSIBILITY OF SUCH DAMAGE.
     ___|                        a (uint) - 16 x IN signals or commandVars                     |________|  |________|
 	 This is input signal:
         __                                                                                              __          __
-    ___|  |______________ RisEdgeT.Qff  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
+    ___|  |______________ RisEdgeT.Qre  16 x Outs - Calculating process is logical parallel ___________|  |________|  |_______
 	 This is output signal of EdgeTrigger:
-   --->|--|<--- Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
+   --->|--|<--- Tre - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
        A  A    or:
        |  |___ 2.Called ThisFunc() again on second time
        |______ 1.Called ThisFunc() time
 */
 uint16_t RisingEdgeTrigger16bit(const uint16_t a, const uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
-{
-    uint16_t sig = a & tBITx;
-    (*RERegs).inputSignal = ((*RERegs).inputSignal & ~tBITx) | sig;
-    (*RERegs).Qre = (*RERegs).inputSignal & (~(*RERegs).REdgeRegister);
-    (*RERegs).REdgeRegister = (*RERegs).inputSignal;
-	return (*RERegs).Qre;        //FFRegs->Qff;
+{	
+	uint16_t sig = a & tBITx;
+	(*RERegs).inputSignal = ((*RERegs).inputSignal & ~tBITx) | sig;
+	(*RERegs).Qre = (*RERegs).inputSignal & (~(*RERegs).REdgeRegister);
+	(*RERegs).REdgeRegister = (*RERegs).inputSignal;
+	return (*RERegs).Qre;        //RERegs->Qre;
 }
 
 // RisingEdgeTrigger16bitCallEverywhere() or name it like RisingEdgeTriggerOnlySpecBits() or RisingEdgeTriggerWithoutAffectToOthers()
@@ -44,7 +44,7 @@ uint16_t RisingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint1
 {
     //stayAsItWas to don't affect to the another bits except the bits specified on tBITx
     //safely save the current bits states of Trigger
-	volatile static struct RisingEdgesTrigInternalRegs16bit_t stayAsItLastRERegs; //or stayAsItWasRERegs
+    volatile static struct RisingEdgesTrigInternalRegs16bit_t stayAsItLastRERegs; //or stayAsItWasRERegs
     stayAsItLastRERegs.inputSignal = (*RERegs).inputSignal;
     stayAsItLastRERegs.REdgeRegister = (*RERegs).REdgeRegister;
     stayAsItLastRERegs.Qre = (*RERegs).Qre;
@@ -78,9 +78,9 @@ uint16_t D_Trigger16bit(const uint16_t a, const uint16_t tBITx, struct D_Trigger
 /*	_______                                                                 __            _______
 	       |_____________	a (uint) - 16 x IN signals or commandVars  ____|  |__________|       |_____
 	        __                                                                 __                 __
-	_______|  |__________	FallEdgeT.Qbf  ___________________________________|  |_______________|  |__
+	_______|  |__________	FallEdgeT.Qfe  ___________________________________|  |_______________|  |__
 
-	   --->|--|<--- Tbf = Tff - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
+	   --->|--|<--- Tfe = Tre - 1 cycle fully executed program (if ThisFunc() called once per one full programm cycle/while(1) for instance)
 	       A  A    or:
 	       |  |___ 2.Called ThisFunc() again on second time
 	       |______ 1.Called ThisFunc() time
@@ -116,7 +116,6 @@ uint16_t FallingEdgeTriggerWithoutAffectToOtherbits(const uint16_t a, const uint
 
 uint16_t D_TriggerWithoutAffectToOtherbits(const uint16_t a, const uint16_t tBITx, struct D_TriggersInternalRegs16bit_t* DTrigRegs)
 {
-	//testing in process in a little while.
 	//stayAsItWas to don't affect to the another bits except the bits specified on tBITx
 	//safely save the current bits states of Trigger
 	volatile static struct D_TriggersInternalRegs16bit_t stayAsItLastDTRegs;
@@ -150,13 +149,13 @@ unsigned char delayedPress16bit(uint16_t *countReg, unsigned char inputBit, unsi
 }
 
 /*
-Example: ForwardFrontsInternalRegs16bit_t FwdFrTrig_MOTORs_Control;
-         ForwardFrontsInternalRegs16bit_t FwdFrTrig_FANs_Control;
+Example: RisingEdgesTrigInternalRegs16bit_t FwdFrTrig_MOTORs_Control;
+         RisingEdgesTrigInternalRegs16bit_t FwdFrTrig_FANs_Control;
          int main(){...
 	    ...
-            Reset_ForwardFrontTrigger16bit(tBIT15 | tBIT3, &FwdFrTrig_MOTORs_Control);
-	    Reset_ForwardFrontTrigger16bit(0xFFFF, &FwdFrTrig_FANs_Control);    //Reset all signals registers; or:
-	    Reset_ForwardFrontTrigger16bit(tALLBITS, &FwdFrTrig_FANs_Control);    //Reset all signals registers;
+            Reset_RisingEdgeTrigger16bit(tBIT15 | tBIT3, &FwdFrTrig_MOTORs_Control);
+	    Reset_RisingEdgeTrigger16bit(0xFFFF, &FwdFrTrig_FANs_Control);      //Reset all signals registers; or:
+	    Reset_RisingEdgeTrigger16bit(tALLBITS, &FwdFrTrig_FANs_Control);    //Reset all signals registers;
 */
 void Reset_RisingEdgeTrigger16bit(uint16_t tBITx, struct RisingEdgesTrigInternalRegs16bit_t *RERegs)
 {
