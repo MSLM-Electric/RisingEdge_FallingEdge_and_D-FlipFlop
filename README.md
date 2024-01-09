@@ -7,3 +7,7 @@ One declarated structure takes uint16_t x 3 = 6 bytes for (ForwardFrontTrigger, 
 Inputs can be not only a physical signal sources, and as well as variables (true/false).
 
 Look at "main_SimpleExample.c" for using purposes.
+
+!!! PROJECT'S STATUS !!!
+Completed.
+-----------------------------------
