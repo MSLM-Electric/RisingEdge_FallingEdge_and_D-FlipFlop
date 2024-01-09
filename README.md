@@ -9,5 +9,6 @@ Inputs can be not only a physical signal sources, and as well as variables (true
 Look at "main_SimpleExample.c" for using purposes.
 
 !!! PROJECT'S STATUS !!!
+
 Completed.
 ----------
