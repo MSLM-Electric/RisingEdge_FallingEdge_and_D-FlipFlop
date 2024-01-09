@@ -10,4 +10,4 @@ Look at "main_SimpleExample.c" for using purposes.
 
 !!! PROJECT'S STATUS !!!
 Completed.
------------------------------------
+----------
